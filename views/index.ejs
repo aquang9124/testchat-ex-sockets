@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Chat Room with Sockets</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<!-- jQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+	<script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="css/styles.css">
+	<script>
+		$(document).ready(function() {
+			var socket = io.connect();
+			var nameInput;
+			socket.on("new_user_connected", function() {
+				nameInput = prompt("What is your name?");
+				socket.emit("got_new_user", { name: nameInput });
+			});
+
+			$("#message").submit(function() {
+				var message = $("#chat_message").val();
+				socket.emit("new_message", { message: message, name: nameInput });
+				return false;
+			});
+
+			socket.on("update_messages", function(data) {
+				$('#chat-wrapper').append("<p>" + data.name + " says: " + data.message + "</p>");
+			});
+		})
+	</script>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<h2>Conversation Board</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<div id="chat-wrapper">
+					
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<form action="" id="message" method="post">
+					<div class="form-group">
+						<input type="text" name="chat_message" id="chat_message" class="form-control">
+					</div>
+					<div class="form-group">
+						<button class="btn btn-default">Send</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

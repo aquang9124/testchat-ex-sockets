@@ -27,7 +27,11 @@
 			});
 
 			socket.on("update_messages", function(data) {
-				$('#chat-wrapper').append("<p>" + data.name + " says: " + data.message + "</p>");
+				var htmlStr = "";
+				for (var i = 0; i < data.messages.length; i++) {
+					htmlStr += data.messages[i];
+				}
+				$('#chat-wrapper').html(htmlStr);
 			});
 		})
 	</script>

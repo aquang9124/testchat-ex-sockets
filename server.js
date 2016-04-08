@@ -15,22 +15,26 @@ var server = app.listen(8000, function() {
 });
 
 var io = require("socket.io").listen(server);
-
+var messages = [];
 io.sockets.on("connection", function(socket) {
 	var name = {};
-	var userID = [];
+	
 	console.log("Socket connected. ID is: " + socket.id);
 	
 	socket.emit("new_user_connected");
 	
 	socket.on("got_new_user", function(data) {
 		name[data.nameInput] = socket.id;
-		userID.push(name[data.nameInput]);
 		console.log(name[data.nameInput]);
 		socket.broadcast.emit("new_user", { userName: data.nameInput });
+		if (messages.length > 0) {
+			socket.emit("update_messages", { messages: messages });
+		}
+		
 	});
 	
 	socket.on("new_message", function(data) {
-		io.emit("update_messages", { message: data.message, name: data.name });
+		messages.push("<p>" + data.name + " says: " + data.message + "</p>");
+		io.emit("update_messages", { messages: messages });
 	});
 });

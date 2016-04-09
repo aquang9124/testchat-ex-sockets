@@ -24,12 +24,11 @@ io.sockets.on("connection", function(socket) {
 	socket.emit("new_user_connected");
 	
 	socket.on("got_new_user", function(data) {
-		name[data.nameInput] = socket.id;
+		name[socket.id] = data.nameInput;
 		socket.broadcast.emit("new_user", { userName: data.nameInput });
 		if (messages.length > 0) {
 			socket.emit("update_messages", { messages: messages });
 		}
-		socket.emit("user_id", { user: socket.id });
 		
 	});
 	

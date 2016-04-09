@@ -15,9 +15,14 @@
 		$(document).ready(function() {
 			var socket = io.connect();
 			var nameInput;
+			var user_id;
 			socket.on("new_user_connected", function() {
 				nameInput = prompt("What is your name?");
 				socket.emit("got_new_user", { name: nameInput });
+			});
+
+			socket.on("user_id", function(data) {
+				user_id = data.user;
 			});
 
 			$("#message").submit(function() {
@@ -33,6 +38,7 @@
 				}
 				$('#chat-wrapper').html(htmlStr);
 			});
+
 		})
 	</script>
 </head>

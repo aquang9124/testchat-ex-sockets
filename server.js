@@ -39,7 +39,8 @@ io.sockets.on("connection", function(socket) {
 	});
 
 	socket.on("disconnect", function() {
-		io.emit("user_disconnected", { user: socket.id });
+		messages.push("<p>User " + socket.id + " disconnected.</p>");
+		io.emit("update_messages", { messages: messages });
 		console.log("User disconnected: " + socket.id);
 	});
 });

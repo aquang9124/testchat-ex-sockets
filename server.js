@@ -25,16 +25,21 @@ io.sockets.on("connection", function(socket) {
 	
 	socket.on("got_new_user", function(data) {
 		name[data.nameInput] = socket.id;
-		console.log(name[data.nameInput]);
 		socket.broadcast.emit("new_user", { userName: data.nameInput });
 		if (messages.length > 0) {
 			socket.emit("update_messages", { messages: messages });
 		}
+		socket.emit("user_id", { user: socket.id });
 		
 	});
 	
 	socket.on("new_message", function(data) {
 		messages.push("<p>" + data.name + " says: " + data.message + "</p>");
 		io.emit("update_messages", { messages: messages });
+	});
+
+	socket.on("disconnect", function() {
+		io.emit("user_disconnected", { user: socket.id });
+		console.log("User disconnected: " + socket.id);
 	});
 });
